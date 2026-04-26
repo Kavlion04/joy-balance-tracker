@@ -1,21 +1,25 @@
 import { Card } from "@/components/ui/card";
 import { ArrowDownCircle, ArrowUpCircle, Trash2 } from "lucide-react";
 import { format, parseISO } from "date-fns";
-import { ru } from "date-fns/locale";
+import { ru, enUS, uz } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { formatMoney, getCategory } from "@/lib/categories";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/contexts/I18nContext";
 import { toast } from "sonner";
 import type { Transaction } from "@/lib/types";
 
+const localeMap = { ru, uz, en: enUS };
+
 export const TransactionCard = ({ tx, onDeleted }: { tx: Transaction; onDeleted: () => void }) => {
+  const { lang, t } = useI18n();
   const cat = getCategory(tx.category);
   const isIncome = tx.type === "income";
 
   const handleDelete = async () => {
     const { error } = await supabase.from("transactions").delete().eq("id", tx.id);
-    if (error) toast.error("Не удалось удалить");
-    else { toast.success("Удалено"); onDeleted(); }
+    if (error) toast.error(t("delete_failed"));
+    else { toast.success(t("deleted")); onDeleted(); }
   };
 
   return (
@@ -35,22 +39,22 @@ export const TransactionCard = ({ tx, onDeleted }: { tx: Transaction; onDeleted:
           ) : (
             <ArrowDownCircle className="h-3.5 w-3.5 text-expense" />
           )}
-          <p className="font-medium truncate">{cat.label}</p>
+          <p className="font-medium truncate">{cat.name[lang]}</p>
         </div>
         {tx.comment && <p className="text-xs text-muted-foreground truncate">{tx.comment}</p>}
         <p className="text-[10px] text-muted-foreground/70 mt-0.5">
-          {format(parseISO(tx.occurred_on), "d MMM yyyy", { locale: ru })}
+          {format(parseISO(tx.occurred_on), "d MMM yyyy", { locale: localeMap[lang] })}
         </p>
       </div>
       <div className="text-right shrink-0">
         <p className={cn("font-semibold whitespace-nowrap", isIncome ? "text-income" : "text-expense")}>
           {isIncome ? "+" : "−"}
-          {formatMoney(Number(tx.amount))}
+          {formatMoney(Number(tx.amount), lang)}
         </p>
         <button
           onClick={handleDelete}
           className="text-muted-foreground/50 hover:text-expense transition-smooth mt-1"
-          aria-label="Удалить"
+          aria-label="Delete"
         >
           <Trash2 className="h-3.5 w-3.5 ml-auto" />
         </button>
