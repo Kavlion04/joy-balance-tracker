@@ -8,8 +8,9 @@ import { Card } from "@/components/ui/card";
 import { Wallet, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/contexts/I18nContext";
+import { LangSwitcher } from "@/components/LangSwitcher";
 
-// Phone-as-email trick: store phone as <digits>@phone.local so Supabase email auth works without SMS
 const phoneToEmail = (phone: string) => {
   const digits = phone.replace(/\D/g, "");
   return `${digits}@phone.local`;
@@ -22,6 +23,7 @@ const normalizePhone = (raw: string) => {
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [mode, setMode] = useState<"login" | "register">("login");
   const [phone, setPhone] = useState("+998");
   const [password, setPassword] = useState("");
@@ -31,11 +33,11 @@ const Auth = () => {
     e.preventDefault();
     const normalized = normalizePhone(phone);
     if (normalized.replace(/\D/g, "").length < 9) {
-      toast.error("Введите корректный номер");
+      toast.error(t("invalid_phone"));
       return;
     }
     if (password.length < 6) {
-      toast.error("Пароль минимум 6 символов");
+      toast.error(t("password_short"));
       return;
     }
     setLoading(true);
@@ -48,32 +50,32 @@ const Auth = () => {
         options: { emailRedirectTo: window.location.origin },
       });
       if (error) {
-        toast.error(error.message.includes("already") ? "Этот номер уже зарегистрирован" : error.message);
+        toast.error(error.message.includes("already") ? t("already_registered") : error.message);
       } else {
-        toast.success("Регистрация успешна!");
+        toast.success(t("registered_ok"));
         navigate("/");
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        toast.error("Неверный номер или пароль");
-      } else {
-        navigate("/");
-      }
+      if (error) toast.error(t("invalid_creds"));
+      else navigate("/");
     }
     setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <div className="absolute top-4 right-4">
+        <LangSwitcher />
+      </div>
       <Card className="glass w-full max-w-md p-8 rounded-3xl border-border/30 shadow-card-soft">
         <div className="flex flex-col items-center mb-6">
           <div className="h-16 w-16 rounded-3xl gradient-primary flex items-center justify-center mb-4 shadow-fab">
             <Wallet className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Финансы</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t("app_name")}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {mode === "login" ? "Войдите в аккаунт" : "Создайте аккаунт"}
+            {mode === "login" ? t("login_account") : t("create_account")}
           </p>
         </div>
 
@@ -88,14 +90,14 @@ const Auth = () => {
                 mode === m ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
               )}
             >
-              {m === "login" ? "Вход" : "Регистрация"}
+              {m === "login" ? t("login") : t("register")}
             </button>
           ))}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Номер телефона</Label>
+            <Label>{t("phone")}</Label>
             <Input
               type="tel"
               placeholder="+998 90 123 45 67"
@@ -106,10 +108,10 @@ const Auth = () => {
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Пароль</Label>
+            <Label>{t("password")}</Label>
             <Input
               type="password"
-              placeholder="Минимум 6 символов"
+              placeholder={t("password_min")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="h-12 bg-muted/50 border-border/50 rounded-2xl"
@@ -122,12 +124,12 @@ const Auth = () => {
             disabled={loading}
             className="w-full h-12 rounded-2xl gradient-primary text-primary-foreground font-semibold transition-bounce"
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "login" ? "Войти" : "Создать аккаунт"}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "login" ? t("enter") : t("create")}
           </Button>
         </form>
 
         <p className="text-[11px] text-muted-foreground/70 text-center mt-6">
-          Ваши данные защищены. Доступ только по вашему паролю.
+          {t("data_safe")}
         </p>
       </Card>
     </div>
