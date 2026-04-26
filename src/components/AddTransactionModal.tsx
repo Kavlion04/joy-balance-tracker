@@ -9,11 +9,12 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import { format } from "date-fns";
-import { ru } from "date-fns/locale";
+import { ru, enUS, uz } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from "@/lib/categories";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useI18n } from "@/contexts/I18nContext";
 import { toast } from "sonner";
 import type { TxType } from "@/lib/types";
 
@@ -23,8 +24,12 @@ interface Props {
   onSaved: () => void;
 }
 
+const localeMap = { ru, uz, en: enUS };
+
 export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
   const { user } = useAuth();
+  const { t, lang } = useI18n();
+  const dfnsLocale = localeMap[lang];
   const [type, setType] = useState<TxType>("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState<string>("");
@@ -41,8 +46,8 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
   const handleSave = async () => {
     if (!user) return;
     const num = parseFloat(amount.replace(",", "."));
-    if (!num || num <= 0) { toast.error("Введите сумму"); return; }
-    if (!category) { toast.error("Выберите категорию"); return; }
+    if (!num || num <= 0) { toast.error(t("enter_amount")); return; }
+    if (!category) { toast.error(t("pick_cat_err")); return; }
 
     setSaving(true);
     const { error } = await supabase.from("transactions").insert({
@@ -55,8 +60,8 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
     });
     setSaving(false);
 
-    if (error) { toast.error("Ошибка: " + error.message); return; }
-    toast.success(type === "income" ? "Доход добавлен" : "Расход добавлен");
+    if (error) { toast.error("Error: " + error.message); return; }
+    toast.success(type === "income" ? t("added_income") : t("added_expense"));
     reset();
     onOpenChange(false);
     onSaved();
@@ -66,11 +71,10 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
     <Dialog open={open} onOpenChange={(o) => { if (!o) reset(); onOpenChange(o); }}>
       <DialogContent className="glass border-border/40 max-w-md rounded-3xl">
         <DialogHeader>
-          <DialogTitle className="text-xl">Новая операция</DialogTitle>
+          <DialogTitle className="text-xl">{t("new_op")}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 pt-2">
-          {/* Type toggle */}
           <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-muted/50">
             <button
               type="button"
@@ -80,7 +84,7 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
                 type === "expense" ? "gradient-expense text-expense-foreground shadow-card-soft" : "text-muted-foreground"
               )}
             >
-              <ArrowDownCircle className="h-4 w-4" /> Расход
+              <ArrowDownCircle className="h-4 w-4" /> {t("expense_short")}
             </button>
             <button
               type="button"
@@ -90,13 +94,12 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
                 type === "income" ? "gradient-primary text-primary-foreground shadow-card-soft" : "text-muted-foreground"
               )}
             >
-              <ArrowUpCircle className="h-4 w-4" /> Доход
+              <ArrowUpCircle className="h-4 w-4" /> {t("income_short")}
             </button>
           </div>
 
-          {/* Amount */}
           <div className="space-y-1.5">
-            <Label>Сумма</Label>
+            <Label>{t("amount")}</Label>
             <Input
               type="number"
               inputMode="decimal"
@@ -107,31 +110,29 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
             />
           </div>
 
-          {/* Category select */}
           <div className="space-y-1.5">
-            <Label>Категория</Label>
+            <Label>{t("category")}</Label>
             <Select value={category} onValueChange={setCategory}>
               <SelectTrigger className="h-12 bg-muted/50 border-border/50 rounded-2xl">
-                <SelectValue placeholder="Выберите категорию" />
+                <SelectValue placeholder={t("pick_category")} />
               </SelectTrigger>
               <SelectContent className="bg-popover">
                 {cats.map((c) => (
                   <SelectItem key={c.id} value={c.id}>
-                    <span className="mr-2">{c.emoji}</span>{c.label}
+                    <span className="mr-2">{c.emoji}</span>{c.name[lang]}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Date picker */}
           <div className="space-y-1.5">
-            <Label>Дата</Label>
+            <Label>{t("date")}</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full h-12 justify-start bg-muted/50 border-border/50 rounded-2xl font-normal">
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {format(date, "d MMMM yyyy", { locale: ru })}
+                  {format(date, "d MMMM yyyy", { locale: dfnsLocale })}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0 bg-popover" align="start">
@@ -140,18 +141,17 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
                   selected={date}
                   onSelect={(d) => d && setDate(d)}
                   initialFocus
-                  locale={ru}
+                  locale={dfnsLocale}
                   className={cn("p-3 pointer-events-auto")}
                 />
               </PopoverContent>
             </Popover>
           </div>
 
-          {/* Comment */}
           <div className="space-y-1.5">
-            <Label>Комментарий</Label>
+            <Label>{t("comment")}</Label>
             <Textarea
-              placeholder="Необязательно"
+              placeholder={t("optional")}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               maxLength={200}
@@ -168,7 +168,7 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
               type === "income" ? "gradient-primary text-primary-foreground" : "gradient-expense text-expense-foreground"
             )}
           >
-            {saving ? "Сохранение…" : "Сохранить"}
+            {saving ? t("saving") : t("save")}
           </Button>
         </div>
       </DialogContent>

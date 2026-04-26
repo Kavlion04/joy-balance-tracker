@@ -1,15 +1,16 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { Home, PieChart, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const items = [
-  { to: "/", icon: Home, label: "Главная" },
-  { to: "/stats", icon: PieChart, label: "Статистика" },
-  { to: "/filter", icon: Filter, label: "Фильтр" },
-];
+import { useI18n } from "@/contexts/I18nContext";
 
 export const BottomNav = () => {
   const { pathname } = useLocation();
+  const { t } = useI18n();
+  const items = [
+    { to: "/", icon: Home, label: t("nav_home") },
+    { to: "/stats", icon: PieChart, label: t("nav_stats") },
+    { to: "/filter", icon: Filter, label: t("nav_filter") },
+  ];
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 px-4 pb-4 pt-2">
       <div className="glass mx-auto max-w-md rounded-2xl px-2 py-2 flex items-center justify-around shadow-card-soft">

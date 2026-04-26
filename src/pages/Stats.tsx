@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useI18n } from "@/contexts/I18nContext";
 import { cn } from "@/lib/utils";
 import { formatMoney, getCategory } from "@/lib/categories";
 import type { Transaction, TxType } from "@/lib/types";
@@ -19,6 +20,7 @@ const COLORS = [
 
 const Stats = () => {
   const { user } = useAuth();
+  const { t, lang } = useI18n();
   const [period, setPeriod] = useState<"day" | "week" | "month">("month");
   const [type, setType] = useState<TxType>("expense");
   const [txs, setTxs] = useState<Transaction[]>([]);
@@ -43,28 +45,30 @@ const Stats = () => {
 
   const data = useMemo(() => {
     const map = new Map<string, number>();
-    txs.filter(t => t.type === type).forEach(t => {
-      map.set(t.category, (map.get(t.category) ?? 0) + Number(t.amount));
+    txs.filter(tx => tx.type === type).forEach(tx => {
+      map.set(tx.category, (map.get(tx.category) ?? 0) + Number(tx.amount));
     });
     return Array.from(map.entries())
-      .map(([cat, value]) => ({ cat, value, label: getCategory(cat).label, emoji: getCategory(cat).emoji }))
+      .map(([cat, value]) => {
+        const c = getCategory(cat);
+        return { cat, value, label: c.name[lang], emoji: c.emoji };
+      })
       .sort((a, b) => b.value - a.value);
-  }, [txs, type]);
+  }, [txs, type, lang]);
 
   const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
     <div className="pb-32 max-w-md mx-auto px-4 pt-6">
-      <h1 className="text-2xl font-bold tracking-tight mb-1">Статистика</h1>
-      <p className="text-sm text-muted-foreground mb-6">Распределение по категориям</p>
+      <h1 className="text-2xl font-bold tracking-tight mb-1">{t("statistics")}</h1>
+      <p className="text-sm text-muted-foreground mb-6">{t("by_category")}</p>
 
-      {/* Period switch */}
       <div className="grid grid-cols-3 gap-1 p-1 rounded-2xl bg-muted/40 mb-3">
         {([
-          { id: "day", label: "День" },
-          { id: "week", label: "Неделя" },
-          { id: "month", label: "Месяц" },
-        ] as const).map(p => (
+          { id: "day" as const, label: t("day") },
+          { id: "week" as const, label: t("week") },
+          { id: "month" as const, label: t("month") },
+        ]).map(p => (
           <button
             key={p.id}
             onClick={() => setPeriod(p.id)}
@@ -78,33 +82,31 @@ const Stats = () => {
         ))}
       </div>
 
-      {/* Type switch */}
       <div className="grid grid-cols-2 gap-1 p-1 rounded-2xl bg-muted/40 mb-6">
         {([
-          { id: "expense" as const, label: "Расходы" },
-          { id: "income" as const, label: "Доходы" },
-        ]).map(t => (
+          { id: "expense" as const, label: t("expense") },
+          { id: "income" as const, label: t("income") },
+        ]).map(tab => (
           <button
-            key={t.id}
-            onClick={() => setType(t.id)}
+            key={tab.id}
+            onClick={() => setType(tab.id)}
             className={cn(
               "py-2 rounded-xl text-xs font-medium transition-smooth",
-              type === t.id
-                ? t.id === "income"
+              type === tab.id
+                ? tab.id === "income"
                   ? "bg-income text-income-foreground"
                   : "bg-expense text-expense-foreground"
                 : "text-muted-foreground"
             )}
           >
-            {t.label}
+            {tab.label}
           </button>
         ))}
       </div>
 
-      {/* Donut */}
       <div className="glass rounded-3xl p-6 shadow-card-soft border-border/30 mb-4">
         {data.length === 0 ? (
-          <div className="text-center py-16 text-muted-foreground text-sm">Нет данных за период</div>
+          <div className="text-center py-16 text-muted-foreground text-sm">{t("no_data")}</div>
         ) : (
           <>
             <div className="relative h-64">
@@ -121,7 +123,7 @@ const Stats = () => {
                     {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                   <Tooltip
-                    formatter={(v: number) => formatMoney(v)}
+                    formatter={(v: number) => formatMoney(v, lang)}
                     contentStyle={{
                       background: "hsl(var(--popover))",
                       border: "1px solid hsl(var(--border))",
@@ -131,8 +133,8 @@ const Stats = () => {
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <p className="text-xs text-muted-foreground">Всего</p>
-                <p className="text-xl font-bold">{formatMoney(total)}</p>
+                <p className="text-xs text-muted-foreground">{t("total")}</p>
+                <p className="text-xl font-bold">{formatMoney(total, lang)}</p>
               </div>
             </div>
 
@@ -147,7 +149,7 @@ const Stats = () => {
                     />
                     <span className="text-sm flex-1 truncate">{d.emoji} {d.label}</span>
                     <span className="text-xs text-muted-foreground tabular-nums">{pct.toFixed(0)}%</span>
-                    <span className="text-sm font-semibold tabular-nums">{formatMoney(d.value)}</span>
+                    <span className="text-sm font-semibold tabular-nums">{formatMoney(d.value, lang)}</span>
                   </div>
                 );
               })}
