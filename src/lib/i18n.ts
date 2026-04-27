@@ -82,4 +82,38 @@ export const t: Dict = {
 
   // Currency
   currency: { ru: "сум", uz: "so‘m", en: "UZS" },
+
+  // Settings
+  nav_settings: { ru: "Настройки", uz: "Sozlamalar", en: "Settings" },
+  settings: { ru: "Настройки", uz: "Sozlamalar", en: "Settings" },
+  profile: { ru: "Профиль", uz: "Profil", en: "Profile" },
+  display_name: { ru: "Имя", uz: "Ism", en: "Display name" },
+  your_name: { ru: "Ваше имя", uz: "Ismingiz", en: "Your name" },
+  upload_avatar: { ru: "Загрузить фото", uz: "Rasm yuklash", en: "Upload photo" },
+  remove_avatar: { ru: "Удалить", uz: "O‘chirish", en: "Remove" },
+  saved: { ru: "Сохранено", uz: "Saqlandi", en: "Saved" },
+  trash: { ru: "Корзина", uz: "Savatcha", en: "Trash" },
+  trash_empty: { ru: "Корзина пуста", uz: "Savatcha bo‘sh", en: "Trash is empty" },
+  restore: { ru: "Восстановить", uz: "Tiklash", en: "Restore" },
+  delete_forever: { ru: "Удалить навсегда", uz: "Butunlay o‘chirish", en: "Delete forever" },
+  empty_trash: { ru: "Очистить корзину", uz: "Savatchani tozalash", en: "Empty trash" },
+  restored: { ru: "Восстановлено", uz: "Tiklandi", en: "Restored" },
+  account: { ru: "Аккаунт", uz: "Hisob", en: "Account" },
+  logout: { ru: "Выйти", uz: "Chiqish", en: "Sign out" },
+  logout_confirm_title: { ru: "Выйти из аккаунта?", uz: "Hisobdan chiqasizmi?", en: "Sign out?" },
+  logout_confirm_desc: { ru: "Вы сможете снова войти, используя свой номер и пароль.", uz: "Raqam va parolingiz bilan qayta kirishingiz mumkin.", en: "You can sign back in with your phone and password." },
+  cancel: { ru: "Отмена", uz: "Bekor qilish", en: "Cancel" },
+
+  // Welcome modal
+  welcome: { ru: "Добро пожаловать!", uz: "Xush kelibsiz!", en: "Welcome!" },
+  welcome_sub: { ru: "Расскажите немного о себе", uz: "O‘zingiz haqingizda biroz ma’lumot bering", en: "Tell us a little about you" },
+  skip: { ru: "Пропустить", uz: "O‘tkazib yuborish", en: "Skip" },
+  continue: { ru: "Продолжить", uz: "Davom etish", en: "Continue" },
+
+  // Auth states
+  loading: { ru: "Загрузка…", uz: "Yuklanmoqda…", en: "Loading…" },
+  signing_in: { ru: "Вход…", uz: "Kirilmoqda…", en: "Signing in…" },
+  registering: { ru: "Регистрация…", uz: "Ro‘yxatdan o‘tilmoqda…", en: "Registering…" },
+  network_error: { ru: "Ошибка сети. Проверьте подключение.", uz: "Tarmoq xatosi. Internetni tekshiring.", en: "Network error. Check your connection." },
+  upload_failed: { ru: "Не удалось загрузить", uz: "Yuklab bo‘lmadi", en: "Upload failed" },
 };
