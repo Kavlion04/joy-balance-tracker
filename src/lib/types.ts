@@ -12,10 +12,15 @@ export interface Transaction {
   deleted_at?: string | null;
 }
 
+export type TextSize = "sm" | "md" | "lg";
+
 export interface Profile {
   id: string;
   user_id: string;
   display_name: string | null;
   avatar_url: string | null;
+  background_url: string | null;
+  accent_color: string | null;
+  text_size: TextSize;
   onboarded: boolean;
 }
