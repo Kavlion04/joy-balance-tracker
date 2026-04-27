@@ -14,12 +14,43 @@ export type Database = {
   }
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          onboarded: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          onboarded?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          onboarded?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
           category: string
           comment: string | null
           created_at: string
+          deleted_at: string | null
           id: string
           occurred_on: string
           type: Database["public"]["Enums"]["transaction_type"]
@@ -31,6 +62,7 @@ export type Database = {
           category: string
           comment?: string | null
           created_at?: string
+          deleted_at?: string | null
           id?: string
           occurred_on?: string
           type: Database["public"]["Enums"]["transaction_type"]
@@ -42,6 +74,7 @@ export type Database = {
           category?: string
           comment?: string | null
           created_at?: string
+          deleted_at?: string | null
           id?: string
           occurred_on?: string
           type?: Database["public"]["Enums"]["transaction_type"]
