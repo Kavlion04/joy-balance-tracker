@@ -24,17 +24,20 @@ export const AvatarPicker = ({ size = 96 }: Props) => {
     if (!file || !user) return;
     setBusy(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
       const path = `${user.id}/avatar-${Date.now()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("avatars")
-        .upload(path, file, { upsert: true, cacheControl: "3600" });
+        .upload(path, file, { upsert: true, cacheControl: "3600", contentType: file.type });
       if (upErr) throw upErr;
       const { data } = supabase.storage.from("avatars").getPublicUrl(path);
-      await update({ avatar_url: data.publicUrl });
+      const res = await update({ avatar_url: data.publicUrl });
+      if (res.error) throw new Error(res.error);
       toast.success(t("saved"));
     } catch (err) {
-      toast.error(t("upload_failed"));
+      const msg = err instanceof Error ? err.message : t("upload_failed");
+      console.error("Avatar upload failed:", err);
+      toast.error(`${t("upload_failed")}: ${msg}`);
     } finally {
       setBusy(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -43,7 +46,8 @@ export const AvatarPicker = ({ size = 96 }: Props) => {
 
   const remove = async () => {
     setBusy(true);
-    await update({ avatar_url: null });
+    const res = await update({ avatar_url: null });
+    if (res.error) toast.error(res.error);
     setBusy(false);
   };
 

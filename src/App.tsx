@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProfileProvider } from "@/contexts/ProfileContext";
 import { I18nProvider } from "@/contexts/I18nContext";
 import { ProtectedLayout } from "@/components/ProtectedLayout";
+import { ThemeApplier } from "@/components/ThemeApplier";
 import Home from "./pages/Home";
 import Stats from "./pages/Stats";
 import Filter from "./pages/Filter";
@@ -25,6 +26,7 @@ const App = () => (
         <I18nProvider>
         <AuthProvider>
           <ProfileProvider>
+          <ThemeApplier />
           <Routes>
             <Route path="/auth" element={<Auth />} />
             <Route path="/" element={<ProtectedLayout><Home /></ProtectedLayout>} />

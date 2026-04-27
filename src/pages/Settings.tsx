@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Loader2, RotateCcw, Trash2, User as UserIcon } from "lucide-react";
+import { LogOut, Loader2, RotateCcw, Trash2, User as UserIcon, Palette, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { ru, enUS, uz } from "date-fns/locale";
@@ -23,6 +23,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/contexts/ProfileContext";
 import { useI18n } from "@/contexts/I18nContext";
 import { AvatarPicker } from "@/components/AvatarPicker";
+import { BackgroundPicker } from "@/components/BackgroundPicker";
+import { AppearanceSettings } from "@/components/AppearanceSettings";
+import { InstallButton } from "@/components/InstallButton";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { formatMoney, getCategory } from "@/lib/categories";
 import { cn } from "@/lib/utils";
@@ -126,6 +129,27 @@ const Settings = () => {
             </Button>
           </div>
         </div>
+      </Card>
+
+      {/* Appearance */}
+      <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
+        <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+          <Palette className="h-4 w-4" /> {t("appearance")}
+        </div>
+        <AppearanceSettings />
+      </Card>
+
+      {/* Background */}
+      <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
+        <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+          <ImageIcon className="h-4 w-4" /> {t("background")}
+        </div>
+        <BackgroundPicker />
+      </Card>
+
+      {/* Install */}
+      <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
+        <InstallButton />
       </Card>
 
       {/* Trash */}
