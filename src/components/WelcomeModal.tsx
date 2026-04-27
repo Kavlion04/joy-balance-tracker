@@ -33,7 +33,7 @@ export const WelcomeModal = () => {
 
   return (
     <Dialog open={open}>
-      <DialogContent className="glass border-border/30 rounded-3xl max-w-sm" hideClose>
+      <DialogContent className="glass border-border/30 rounded-3xl max-w-sm [&>button]:hidden">
         <DialogHeader>
           <DialogTitle className="text-center text-xl">{t("welcome")}</DialogTitle>
           <DialogDescription className="text-center">{t("welcome_sub")}</DialogDescription>
