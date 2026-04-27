@@ -116,4 +116,19 @@ export const t: Dict = {
   registering: { ru: "Регистрация…", uz: "Ro‘yxatdan o‘tilmoqda…", en: "Registering…" },
   network_error: { ru: "Ошибка сети. Проверьте подключение.", uz: "Tarmoq xatosi. Internetni tekshiring.", en: "Network error. Check your connection." },
   upload_failed: { ru: "Не удалось загрузить", uz: "Yuklab bo‘lmadi", en: "Upload failed" },
+
+  // Appearance
+  appearance: { ru: "Оформление", uz: "Ko‘rinish", en: "Appearance" },
+  background: { ru: "Фон", uz: "Fon", en: "Background" },
+  upload_background: { ru: "Загрузить фон", uz: "Fon yuklash", en: "Upload background" },
+  no_background: { ru: "Фон не выбран", uz: "Fon tanlanmagan", en: "No background set" },
+  accent_color: { ru: "Акцентный цвет", uz: "Asosiy rang", en: "Accent color" },
+  text_size: { ru: "Размер текста", uz: "Matn hajmi", en: "Text size" },
+  reset: { ru: "Сброс", uz: "Tiklash", en: "Reset" },
+
+  // Install
+  install_app: { ru: "Установить приложение", uz: "Ilovani o‘rnatish", en: "Install app" },
+  install_hint_ios: { ru: "На iPhone: «Поделиться» → «На экран «Домой»»", uz: "iPhone’da: «Ulashish» → «Bosh ekranga»", en: "On iPhone: Share → Add to Home Screen" },
+  install_unavailable: { ru: "Установка недоступна в этом браузере", uz: "Ushbu brauzerda o‘rnatish mavjud emas", en: "Install not available in this browser" },
+  installed: { ru: "Установлено!", uz: "O‘rnatildi!", en: "Installed!" },
 };
