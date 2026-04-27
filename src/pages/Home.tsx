@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
-import { Plus, LogOut, ArrowUpCircle, ArrowDownCircle, CalendarDays } from "lucide-react";
+import { Plus, ArrowUpCircle, ArrowDownCircle, CalendarDays } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
