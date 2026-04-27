@@ -9,6 +9,7 @@ import { ru, enUS, uz } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/contexts/ProfileContext";
 import { useI18n } from "@/contexts/I18nContext";
 import { AddTransactionModal } from "@/components/AddTransactionModal";
 import { TransactionCard } from "@/components/TransactionCard";
