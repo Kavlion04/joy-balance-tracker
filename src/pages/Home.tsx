@@ -35,6 +35,7 @@ const Home = () => {
       .select("*")
       .eq("user_id", user.id)
       .eq("occurred_on", dateStr)
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
     setTxs((data ?? []) as Transaction[]);
   };
