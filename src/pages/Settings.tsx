@@ -131,6 +131,27 @@ const Settings = () => {
         </div>
       </Card>
 
+      {/* Appearance */}
+      <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
+        <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+          <Palette className="h-4 w-4" /> {t("appearance")}
+        </div>
+        <AppearanceSettings />
+      </Card>
+
+      {/* Background */}
+      <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
+        <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+          <ImageIcon className="h-4 w-4" /> {t("background")}
+        </div>
+        <BackgroundPicker />
+      </Card>
+
+      {/* Install */}
+      <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
+        <InstallButton />
+      </Card>
+
       {/* Trash */}
       <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
         <div className="flex items-center justify-between mb-3">
