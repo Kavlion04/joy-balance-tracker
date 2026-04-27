@@ -38,6 +38,7 @@ const Stats = () => {
     supabase.from("transactions")
       .select("*")
       .eq("user_id", user.id)
+      .is("deleted_at", null)
       .gte("occurred_on", fromStr)
       .lte("occurred_on", toStr)
       .then(({ data }) => setTxs((data ?? []) as Transaction[]));

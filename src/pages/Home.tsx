@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
-import { Plus, LogOut, ArrowUpCircle, ArrowDownCircle, CalendarDays } from "lucide-react";
+import { Plus, ArrowUpCircle, ArrowDownCircle, CalendarDays } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -8,6 +9,7 @@ import { ru, enUS, uz } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/contexts/ProfileContext";
 import { useI18n } from "@/contexts/I18nContext";
 import { AddTransactionModal } from "@/components/AddTransactionModal";
 import { TransactionCard } from "@/components/TransactionCard";
@@ -18,7 +20,8 @@ import type { Transaction, TxType } from "@/lib/types";
 const localeMap = { ru, uz, en: enUS };
 
 const Home = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
+  const { profile } = useProfile();
   const { t, lang } = useI18n();
   const dfns = localeMap[lang];
   const [date, setDate] = useState<Date>(new Date());
@@ -35,6 +38,7 @@ const Home = () => {
       .select("*")
       .eq("user_id", user.id)
       .eq("occurred_on", dateStr)
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
     setTxs((data ?? []) as Transaction[]);
   };
@@ -49,25 +53,25 @@ const Home = () => {
 
   const filtered = tab === "all" ? txs : txs.filter(tx => tx.type === tab);
 
+  const initials = (profile?.display_name || "?").slice(0, 2).toUpperCase();
+  const greeting = profile?.display_name ? `${t("hello")}, ${profile.display_name}` : t("hello");
+
   return (
     <div className="pb-32 max-w-md mx-auto px-4 pt-6">
       <div className="flex items-center justify-between mb-6">
-        <div>
-          <p className="text-xs text-muted-foreground">{t("hello")}</p>
-          <h1 className="text-2xl font-bold tracking-tight">{t("my_finances")}</h1>
+        <div className="flex items-center gap-3 min-w-0">
+          <Avatar className="h-11 w-11 ring-2 ring-primary/30 shrink-0">
+            <AvatarImage src={profile?.avatar_url ?? undefined} />
+            <AvatarFallback className="gradient-primary text-primary-foreground text-sm font-semibold">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground truncate">{greeting}</p>
+            <h1 className="text-xl font-bold tracking-tight truncate">{t("my_finances")}</h1>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <LangSwitcher />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={signOut}
-            className="rounded-2xl glass border-border/30"
-            aria-label="Sign out"
-          >
-            <LogOut className="h-4 w-4" />
-          </Button>
-        </div>
+        <LangSwitcher />
       </div>
 
       <Popover>

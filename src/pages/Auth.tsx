@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Wallet, Loader2 } from "lucide-react";
+import { Wallet, Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/contexts/I18nContext";
@@ -27,40 +27,62 @@ const Auth = () => {
   const [mode, setMode] = useState<"login" | "register">("login");
   const [phone, setPhone] = useState("+998");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const switchMode = (m: "login" | "register") => {
+    setMode(m);
+    setError(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     const normalized = normalizePhone(phone);
     if (normalized.replace(/\D/g, "").length < 9) {
-      toast.error(t("invalid_phone"));
+      setError(t("invalid_phone"));
       return;
     }
     if (password.length < 6) {
-      toast.error(t("password_short"));
+      setError(t("password_short"));
       return;
     }
     setLoading(true);
     const email = phoneToEmail(normalized);
 
-    if (mode === "register") {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: window.location.origin },
-      });
-      if (error) {
-        toast.error(error.message.includes("already") ? t("already_registered") : error.message);
+    try {
+      if (mode === "register") {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: window.location.origin },
+        });
+        if (error) {
+          const msg = error.message.toLowerCase().includes("already")
+            ? t("already_registered")
+            : error.message;
+          setError(msg);
+          toast.error(msg);
+        } else {
+          toast.success(t("registered_ok"));
+          navigate("/");
+        }
       } else {
-        toast.success(t("registered_ok"));
-        navigate("/");
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          setError(t("invalid_creds"));
+          toast.error(t("invalid_creds"));
+        } else {
+          navigate("/");
+        }
       }
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) toast.error(t("invalid_creds"));
-      else navigate("/");
+    } catch {
+      setError(t("network_error"));
+      toast.error(t("network_error"));
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -84,9 +106,10 @@ const Auth = () => {
             <button
               key={m}
               type="button"
-              onClick={() => setMode(m)}
+              onClick={() => switchMode(m)}
+              disabled={loading}
               className={cn(
-                "py-2.5 rounded-xl text-sm font-medium transition-smooth",
+                "py-2.5 rounded-xl text-sm font-medium transition-smooth disabled:opacity-60",
                 mode === m ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
               )}
             >
@@ -102,29 +125,61 @@ const Auth = () => {
               type="tel"
               placeholder="+998 90 123 45 67"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="h-12 bg-muted/50 border-border/50 rounded-2xl"
+              onChange={(e) => { setPhone(e.target.value); setError(null); }}
+              disabled={loading}
+              className={cn(
+                "h-12 bg-muted/50 border-border/50 rounded-2xl",
+                error && "border-expense/60 focus-visible:ring-expense/40"
+              )}
               required
             />
           </div>
           <div className="space-y-1.5">
             <Label>{t("password")}</Label>
-            <Input
-              type="password"
-              placeholder={t("password_min")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-12 bg-muted/50 border-border/50 rounded-2xl"
-              required
-              minLength={6}
-            />
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder={t("password_min")}
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); setError(null); }}
+                disabled={loading}
+                className={cn(
+                  "h-12 bg-muted/50 border-border/50 rounded-2xl pr-12",
+                  error && "border-expense/60 focus-visible:ring-expense/40"
+                )}
+                required
+                minLength={6}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(s => !s)}
+                tabIndex={-1}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-smooth"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
+
+          {error && (
+            <div className="flex items-start gap-2 p-3 rounded-2xl bg-expense/10 border border-expense/30 text-expense text-xs">
+              <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-12 rounded-2xl gradient-primary text-primary-foreground font-semibold transition-bounce"
+            className="w-full h-12 rounded-2xl gradient-primary text-primary-foreground font-semibold transition-bounce disabled:opacity-80"
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "login" ? t("enter") : t("create")}
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {mode === "login" ? t("signing_in") : t("registering")}
+              </span>
+            ) : mode === "login" ? t("enter") : t("create")}
           </Button>
         </form>
 

@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Home, PieChart, Filter } from "lucide-react";
+import { Home, PieChart, Filter, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -10,6 +10,7 @@ export const BottomNav = () => {
     { to: "/", icon: Home, label: t("nav_home") },
     { to: "/stats", icon: PieChart, label: t("nav_stats") },
     { to: "/filter", icon: Filter, label: t("nav_filter") },
+    { to: "/settings", icon: Settings, label: t("nav_settings") },
   ];
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 px-4 pb-4 pt-2">
@@ -22,7 +23,7 @@ export const BottomNav = () => {
               key={it.to}
               to={it.to}
               className={cn(
-                "flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl transition-smooth",
+                "flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-smooth",
                 active ? "text-primary" : "text-muted-foreground"
               )}
             >

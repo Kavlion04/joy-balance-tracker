@@ -17,7 +17,10 @@ export const TransactionCard = ({ tx, onDeleted }: { tx: Transaction; onDeleted:
   const isIncome = tx.type === "income";
 
   const handleDelete = async () => {
-    const { error } = await supabase.from("transactions").delete().eq("id", tx.id);
+    const { error } = await supabase
+      .from("transactions")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", tx.id);
     if (error) toast.error(t("delete_failed"));
     else { toast.success(t("deleted")); onDeleted(); }
   };
