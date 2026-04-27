@@ -7,14 +7,14 @@ interface ProfileCtx {
   profile: Profile | null;
   loading: boolean;
   refresh: () => Promise<void>;
-  update: (patch: Partial<Profile>) => Promise<void>;
+  update: (patch: Partial<Profile>) => Promise<{ error: string | null }>;
 }
 
 const Ctx = createContext<ProfileCtx>({
   profile: null,
   loading: true,
   refresh: async () => {},
-  update: async () => {},
+  update: async () => ({ error: null }),
 });
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
@@ -43,14 +43,15 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   }, [refresh]);
 
   const update = async (patch: Partial<Profile>) => {
-    if (!user) return;
-    const { data } = await supabase
+    if (!user) return { error: "Not signed in" };
+    const { data, error } = await supabase
       .from("profiles")
-      .update(patch)
-      .eq("user_id", user.id)
+      .upsert({ user_id: user.id, ...patch }, { onConflict: "user_id" })
       .select()
       .maybeSingle();
+    if (error) return { error: error.message };
     if (data) setProfile(data as Profile);
+    return { error: null };
   };
 
   return (
