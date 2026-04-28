@@ -15,6 +15,7 @@ import { AddTransactionModal } from "@/components/AddTransactionModal";
 import { TransactionCard } from "@/components/TransactionCard";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { formatMoney } from "@/lib/categories";
+import { cacheGet, cacheSet } from "@/lib/offlineCache";
 import type { Transaction, TxType } from "@/lib/types";
 
 const localeMap = { ru, uz, en: enUS };
@@ -31,16 +32,28 @@ const Home = () => {
 
   const dateStr = format(date, "yyyy-MM-dd");
 
+  const cacheKey = user ? `tx:${user.id}:${dateStr}` : null;
+
   const load = async () => {
-    if (!user) return;
-    const { data } = await supabase
-      .from("transactions")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("occurred_on", dateStr)
-      .is("deleted_at", null)
-      .order("created_at", { ascending: false });
-    setTxs((data ?? []) as Transaction[]);
+    if (!user || !cacheKey) return;
+    // Hydrate immediately from cache for offline-first feel
+    const cached = cacheGet<Transaction[]>(cacheKey);
+    if (cached) setTxs(cached);
+    try {
+      const { data, error } = await supabase
+        .from("transactions")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("occurred_on", dateStr)
+        .is("deleted_at", null)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      const fresh = (data ?? []) as Transaction[];
+      setTxs(fresh);
+      cacheSet(cacheKey, fresh);
+    } catch {
+      // Offline / network error — keep cached data on screen
+    }
   };
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, dateStr]);
