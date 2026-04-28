@@ -8,6 +8,7 @@ import { ProfileProvider } from "@/contexts/ProfileContext";
 import { I18nProvider } from "@/contexts/I18nContext";
 import { ProtectedLayout } from "@/components/ProtectedLayout";
 import { ThemeApplier } from "@/components/ThemeApplier";
+import { OfflineBanner } from "@/components/OfflineBanner";
 import Home from "./pages/Home";
 import Stats from "./pages/Stats";
 import Filter from "./pages/Filter";
@@ -27,6 +28,7 @@ const App = () => (
         <AuthProvider>
           <ProfileProvider>
           <ThemeApplier />
+          <OfflineBanner />
           <Routes>
             <Route path="/auth" element={<Auth />} />
             <Route path="/" element={<ProtectedLayout><Home /></ProtectedLayout>} />
