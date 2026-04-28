@@ -59,9 +59,10 @@ const Auth = () => {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) {
+          console.error("Signup failed:", error);
           const msg = error.message.toLowerCase().includes("already")
             ? t("already_registered")
-            : error.message;
+            : t("registration_failed");
           setError(msg);
           toast.error(msg);
         } else {

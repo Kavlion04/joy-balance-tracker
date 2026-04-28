@@ -116,6 +116,8 @@ export const t: Dict = {
   registering: { ru: "Регистрация…", uz: "Ro‘yxatdan o‘tilmoqda…", en: "Registering…" },
   network_error: { ru: "Ошибка сети. Проверьте подключение.", uz: "Tarmoq xatosi. Internetni tekshiring.", en: "Network error. Check your connection." },
   upload_failed: { ru: "Не удалось загрузить", uz: "Yuklab bo‘lmadi", en: "Upload failed" },
+  save_failed: { ru: "Не удалось сохранить", uz: "Saqlab bo‘lmadi", en: "Could not save" },
+  registration_failed: { ru: "Регистрация не удалась. Попробуйте позже.", uz: "Ro‘yxatdan o‘tib bo‘lmadi. Keyinroq urinib ko‘ring.", en: "Registration failed. Please try again." },
 
   // Appearance
   appearance: { ru: "Оформление", uz: "Ko‘rinish", en: "Appearance" },
