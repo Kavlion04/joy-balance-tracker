@@ -131,4 +131,8 @@ export const t: Dict = {
   install_hint_ios: { ru: "На iPhone: «Поделиться» → «На экран «Домой»»", uz: "iPhone’da: «Ulashish» → «Bosh ekranga»", en: "On iPhone: Share → Add to Home Screen" },
   install_unavailable: { ru: "Установка недоступна в этом браузере", uz: "Ushbu brauzerda o‘rnatish mavjud emas", en: "Install not available in this browser" },
   installed: { ru: "Установлено!", uz: "O‘rnatildi!", en: "Installed!" },
+
+  // Network
+  you_are_offline: { ru: "Нет подключения к интернету", uz: "Internetga ulanish yo‘q", en: "You are offline" },
+  back_online: { ru: "Снова в сети", uz: "Yana onlayn", en: "Back online" },
 };
