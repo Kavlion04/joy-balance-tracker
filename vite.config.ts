@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => ({
         navigateFallbackDenylist: [/^\/~oauth/, /^\/auth/],
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.origin === self.location.origin,
+            urlPattern: ({ url }: { url: URL }) => url.origin === self.location.origin,
             handler: "StaleWhileRevalidate",
             options: { cacheName: "app-shell" },
           },
