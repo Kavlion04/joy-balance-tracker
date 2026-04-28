@@ -60,7 +60,7 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
     });
     setSaving(false);
 
-    if (error) { toast.error("Error: " + error.message); return; }
+    if (error) { console.error("Transaction save failed:", error); toast.error(t("save_failed")); return; }
     toast.success(type === "income" ? t("added_income") : t("added_expense"));
     reset();
     onOpenChange(false);
