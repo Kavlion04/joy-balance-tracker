@@ -1,16 +1,23 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
 import { BottomNav } from "./BottomNav";
 import { WelcomeModal } from "./WelcomeModal";
+import { PinLock } from "./PinLock";
+import { isUnlocked } from "@/lib/pinLock";
 import { playWelcomeChimeOncePerSession, isChimeEnabled } from "@/lib/welcomeChime";
 
 export const ProtectedLayout = ({ children }: { children: ReactNode }) => {
   const { user, loading } = useAuth();
+  const [unlocked, setUnlocked] = useState(false);
 
   useEffect(() => {
-    if (!user || !isChimeEnabled()) return;
+    if (user) setUnlocked(isUnlocked(user.id));
+  }, [user]);
+
+  useEffect(() => {
+    if (!user || !unlocked || !isChimeEnabled()) return;
     const trigger = () => {
       playWelcomeChimeOncePerSession();
       window.removeEventListener("pointerdown", trigger);
@@ -25,7 +32,7 @@ export const ProtectedLayout = ({ children }: { children: ReactNode }) => {
       window.removeEventListener("pointerdown", trigger);
       window.removeEventListener("keydown", trigger);
     };
-  }, [user]);
+  }, [user, unlocked]);
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -33,6 +40,7 @@ export const ProtectedLayout = ({ children }: { children: ReactNode }) => {
     </div>
   );
   if (!user) return <Navigate to="/auth" replace />;
+  if (!unlocked) return <PinLock onUnlocked={() => setUnlocked(true)} />;
   return (
     <div className="min-h-screen">
       <WelcomeModal />
