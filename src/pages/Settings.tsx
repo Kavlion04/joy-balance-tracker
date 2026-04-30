@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Loader2, RotateCcw, Trash2, User as UserIcon, Palette, Image as ImageIcon } from "lucide-react";
+import { LogOut, Loader2, RotateCcw, Trash2, User as UserIcon, Palette, Image as ImageIcon, Volume2 } from "lucide-react";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { ru, enUS, uz } from "date-fns/locale";
@@ -25,6 +25,7 @@ import { useI18n } from "@/contexts/I18nContext";
 import { AvatarPicker } from "@/components/AvatarPicker";
 import { BackgroundPicker } from "@/components/BackgroundPicker";
 import { AppearanceSettings } from "@/components/AppearanceSettings";
+import { SoundSettings } from "@/components/SoundSettings";
 import { InstallButton } from "@/components/InstallButton";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { formatMoney, getCategory } from "@/lib/categories";
