@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Loader2, RotateCcw, Trash2, User as UserIcon, Palette, Image as ImageIcon } from "lucide-react";
+import { LogOut, Loader2, RotateCcw, Trash2, User as UserIcon, Palette, Image as ImageIcon, Volume2 } from "lucide-react";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { ru, enUS, uz } from "date-fns/locale";
@@ -25,6 +25,7 @@ import { useI18n } from "@/contexts/I18nContext";
 import { AvatarPicker } from "@/components/AvatarPicker";
 import { BackgroundPicker } from "@/components/BackgroundPicker";
 import { AppearanceSettings } from "@/components/AppearanceSettings";
+import { SoundSettings } from "@/components/SoundSettings";
 import { InstallButton } from "@/components/InstallButton";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { formatMoney, getCategory } from "@/lib/categories";
@@ -137,6 +138,14 @@ const Settings = () => {
           <Palette className="h-4 w-4" /> {t("appearance")}
         </div>
         <AppearanceSettings />
+      </Card>
+
+      {/* Sound */}
+      <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
+        <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+          <Volume2 className="h-4 w-4" /> {t("sound")}
+        </div>
+        <SoundSettings />
       </Card>
 
       {/* Background */}

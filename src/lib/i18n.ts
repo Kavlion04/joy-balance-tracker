@@ -143,4 +143,9 @@ export const t: Dict = {
   // Network
   you_are_offline: { ru: "Нет подключения к интернету", uz: "Internetga ulanish yo‘q", en: "You are offline" },
   back_online: { ru: "Снова в сети", uz: "Yana onlayn", en: "Back online" },
+
+  // Sound
+  sound: { ru: "Звук", uz: "Ovoz", en: "Sound" },
+  welcome_chime: { ru: "Приветственный звук", uz: "Salomlashuv ohangi", en: "Welcome chime" },
+  welcome_chime_desc: { ru: "Тихий звон при входе в приложение", uz: "Ilovaga kirganda yumshoq ohang", en: "A soft tone when you open the app" },
 };
