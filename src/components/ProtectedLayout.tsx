@@ -1,12 +1,32 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
 import { BottomNav } from "./BottomNav";
 import { WelcomeModal } from "./WelcomeModal";
+import { playWelcomeChimeOncePerSession, isChimeEnabled } from "@/lib/welcomeChime";
 
 export const ProtectedLayout = ({ children }: { children: ReactNode }) => {
   const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!user || !isChimeEnabled()) return;
+    const trigger = () => {
+      playWelcomeChimeOncePerSession();
+      window.removeEventListener("pointerdown", trigger);
+      window.removeEventListener("keydown", trigger);
+    };
+    // Try immediately (works if AudioContext is already unlocked)
+    playWelcomeChimeOncePerSession();
+    // Fallback: play on first interaction
+    window.addEventListener("pointerdown", trigger, { once: true });
+    window.addEventListener("keydown", trigger, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", trigger);
+      window.removeEventListener("keydown", trigger);
+    };
+  }, [user]);
+
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
       <Loader2 className="h-6 w-6 animate-spin text-primary" />
