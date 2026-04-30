@@ -148,4 +148,23 @@ export const t: Dict = {
   sound: { ru: "Звук", uz: "Ovoz", en: "Sound" },
   welcome_chime: { ru: "Приветственный звук", uz: "Salomlashuv ohangi", en: "Welcome chime" },
   welcome_chime_desc: { ru: "Тихий звон при входе в приложение", uz: "Ilovaga kirganda yumshoq ohang", en: "A soft tone when you open the app" },
+
+  // PIN lock
+  pin_create_title: { ru: "Создайте PIN-код", uz: "PIN-kod yarating", en: "Create a PIN" },
+  pin_create_sub: { ru: "4 цифры. Не все одинаковые.", uz: "4 raqam. Barchasi bir xil bo‘lmasin.", en: "4 digits. Not all the same." },
+  pin_confirm_title: { ru: "Повторите PIN-код", uz: "PIN-kodni takrorlang", en: "Confirm your PIN" },
+  pin_confirm_sub: { ru: "Введите тот же PIN ещё раз", uz: "Xuddi shu PIN-kodni qayta kiriting", en: "Enter the same PIN again" },
+  pin_unlock_title: { ru: "Введите PIN-код", uz: "PIN-kodni kiriting", en: "Enter your PIN" },
+  pin_unlock_sub: { ru: "Разблокируйте приложение", uz: "Ilovani qulfdan chiqaring", en: "Unlock the app" },
+  pin_invalid: { ru: "Все 4 цифры не должны совпадать", uz: "4 ta raqam bir xil bo‘lmasligi kerak", en: "All 4 digits cannot be the same" },
+  pin_mismatch: { ru: "PIN-коды не совпадают", uz: "PIN-kodlar mos kelmadi", en: "PINs don’t match" },
+  pin_wrong: { ru: "Неверный PIN-код", uz: "PIN-kod noto‘g‘ri", en: "Wrong PIN" },
+  pin_set: { ru: "PIN-код установлен", uz: "PIN-kod o‘rnatildi", en: "PIN set" },
+  biometric_enabled: { ru: "Отпечаток пальца включён", uz: "Barmoq izi yoqildi", en: "Fingerprint enabled" },
+  biometric_unlock: { ru: "Разблокировать отпечатком", uz: "Barmoq izi bilan ochish", en: "Unlock with fingerprint" },
+  biometric_failed: { ru: "Не удалось распознать", uz: "Tanib bo‘lmadi", en: "Biometric failed" },
+  pin_change: { ru: "Изменить PIN-код", uz: "PIN-kodni o‘zgartirish", en: "Change PIN" },
+  biometric: { ru: "Отпечаток пальца / Face ID", uz: "Barmoq izi / Face ID", en: "Fingerprint / Face ID" },
+  biometric_desc: { ru: "Быстрая разблокировка биометрией", uz: "Biometriya bilan tezkor ochish", en: "Quick unlock with biometrics" },
+  security: { ru: "Безопасность", uz: "Xavfsizlik", en: "Security" },
 };
