@@ -26,6 +26,7 @@ import { AvatarPicker } from "@/components/AvatarPicker";
 import { BackgroundPicker } from "@/components/BackgroundPicker";
 import { AppearanceSettings } from "@/components/AppearanceSettings";
 import { SoundSettings } from "@/components/SoundSettings";
+import { SecuritySettings } from "@/components/SecuritySettings";
 import { InstallButton } from "@/components/InstallButton";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { formatMoney, getCategory } from "@/lib/categories";
