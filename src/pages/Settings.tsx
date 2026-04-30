@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Loader2, RotateCcw, Trash2, User as UserIcon, Palette, Image as ImageIcon, Volume2 } from "lucide-react";
+import { LogOut, Loader2, RotateCcw, Trash2, User as UserIcon, Palette, Image as ImageIcon, Volume2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { ru, enUS, uz } from "date-fns/locale";
