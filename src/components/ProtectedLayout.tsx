@@ -32,7 +32,7 @@ export const ProtectedLayout = ({ children }: { children: ReactNode }) => {
       window.removeEventListener("pointerdown", trigger);
       window.removeEventListener("keydown", trigger);
     };
-  }, [user]);
+  }, [user, unlocked]);
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -40,6 +40,7 @@ export const ProtectedLayout = ({ children }: { children: ReactNode }) => {
     </div>
   );
   if (!user) return <Navigate to="/auth" replace />;
+  if (!unlocked) return <PinLock onUnlocked={() => setUnlocked(true)} />;
   return (
     <div className="min-h-screen">
       <WelcomeModal />
