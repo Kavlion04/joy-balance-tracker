@@ -133,6 +133,12 @@ export const t: Dict = {
   install_hint_ios: { ru: "На iPhone: «Поделиться» → «На экран «Домой»»", uz: "iPhone’da: «Ulashish» → «Bosh ekranga»", en: "On iPhone: Share → Add to Home Screen" },
   install_unavailable: { ru: "Установка недоступна в этом браузере", uz: "Ushbu brauzerda o‘rnatish mavjud emas", en: "Install not available in this browser" },
   installed: { ru: "Установлено!", uz: "O‘rnatildi!", en: "Installed!" },
+  install_ios_title: { ru: "Установить на iPhone", uz: "iPhone’ga o‘rnatish", en: "Install on iPhone" },
+  install_ios_step1: { ru: "Нажмите кнопку «Поделиться» внизу Safari", uz: "Safari pastidagi «Ulashish» tugmasini bosing", en: "Tap the Share button at the bottom of Safari" },
+  install_ios_step2: { ru: "Выберите «На экран «Домой»» в меню", uz: "Menyudan «Bosh ekranga» ni tanlang", en: "Choose “Add to Home Screen” in the menu" },
+  install_ios_step3: { ru: "Нажмите «Добавить» в правом верхнем углу", uz: "O‘ng yuqori burchakdagi «Qo‘shish» ni bosing", en: "Tap “Add” in the top-right corner" },
+  install_ios_safari_only: { ru: "Откройте этот сайт в Safari, чтобы установить приложение. В Chrome на iPhone установка недоступна.", uz: "Ilovani o‘rnatish uchun ushbu saytni Safari’da oching. iPhone’dagi Chrome’da o‘rnatish mavjud emas.", en: "Open this site in Safari to install the app. Installing isn’t available in Chrome on iPhone." },
+  got_it: { ru: "Понятно", uz: "Tushunarli", en: "Got it" },
 
   // Network
   you_are_offline: { ru: "Нет подключения к интернету", uz: "Internetga ulanish yo‘q", en: "You are offline" },
