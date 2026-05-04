@@ -58,6 +58,19 @@ export const isBiometricSupported = () =>
   !!window.PublicKeyCredential &&
   typeof navigator.credentials?.create === "function";
 
+// Async check for an actual platform authenticator (Touch ID / Face ID / Windows Hello / Android fingerprint).
+export const isPlatformAuthenticatorAvailable = async (): Promise<boolean> => {
+  if (!isBiometricSupported()) return false;
+  try {
+    const fn = (window.PublicKeyCredential as any)
+      ?.isUserVerifyingPlatformAuthenticatorAvailable;
+    if (typeof fn !== "function") return false;
+    return await fn.call(window.PublicKeyCredential);
+  } catch {
+    return false;
+  }
+};
+
 export const hasBiometric = (uid: string) => !!localStorage.getItem(BIO_KEY(uid));
 
 const b64uToBytes = (s: string) => {
