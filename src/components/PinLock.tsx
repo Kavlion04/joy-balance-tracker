@@ -13,6 +13,7 @@ import {
   markUnlocked,
   hasBiometric,
   isBiometricSupported,
+  isPlatformAuthenticatorAvailable,
   enrollBiometric,
   unlockWithBiometric,
 } from "@/lib/pinLock";
