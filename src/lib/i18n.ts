@@ -167,4 +167,5 @@ export const t: Dict = {
   biometric: { ru: "Отпечаток пальца / Face ID", uz: "Barmoq izi / Face ID", en: "Fingerprint / Face ID" },
   biometric_desc: { ru: "Быстрая разблокировка биометрией", uz: "Biometriya bilan tezkor ochish", en: "Quick unlock with biometrics" },
   security: { ru: "Безопасность", uz: "Xavfsizlik", en: "Security" },
+  biometric_enable_now: { ru: "Включить Face ID / отпечаток", uz: "Face ID / barmoq izini yoqish", en: "Enable Face ID / fingerprint" },
 };

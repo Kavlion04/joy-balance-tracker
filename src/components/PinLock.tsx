@@ -13,6 +13,7 @@ import {
   markUnlocked,
   hasBiometric,
   isBiometricSupported,
+  isPlatformAuthenticatorAvailable,
   enrollBiometric,
   unlockWithBiometric,
 } from "@/lib/pinLock";
@@ -27,13 +28,27 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
   const initialMode: Mode = hasPin(uid) ? "unlock" : "create";
   const [mode, setMode] = useState<Mode>(initialMode);
   const [pin, setPinValue] = useState("");
+  const pinRef = useRef(""); // synchronous mirror to avoid stale-state races between rapid taps
   const [firstPin, setFirstPin] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [shake, setShake] = useState(false);
   const triedBio = useRef(false);
+  const [platformBio, setPlatformBio] = useState(false);
+  const [offerBio, setOfferBio] = useState(false);
+  
 
-  // Auto-try biometric unlock on mount
+  // Async-detect Face ID / Touch ID / Android fingerprint
+  useEffect(() => {
+    isPlatformAuthenticatorAvailable().then(setPlatformBio);
+  }, []);
+
+  const setPinSafe = (v: string) => {
+    pinRef.current = v;
+    setPinValue(v);
+  };
+
+  // Auto-try biometric unlock on mount (silent — iOS may ignore without gesture, that's ok)
   useEffect(() => {
     if (mode !== "unlock" || triedBio.current) return;
     triedBio.current = true;
@@ -48,7 +63,7 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
     setError(msg);
     setShake(true);
     setTimeout(() => setShake(false), 500);
-    setPinValue("");
+    setPinSafe("");
   };
 
   const handleComplete = async (value: string) => {
@@ -60,7 +75,7 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
           return;
         }
         setFirstPin(value);
-        setPinValue("");
+        setPinSafe("");
         setMode("confirm");
         setError(null);
       } else if (mode === "confirm") {
@@ -73,16 +88,12 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
         await setPin(uid, value);
         markUnlocked(uid);
         toast.success(t("pin_set"));
-        // Offer biometric enrollment
-        if (isBiometricSupported() && !hasBiometric(uid)) {
-          try {
-            await enrollBiometric(uid, user!.email ?? "user");
-            toast.success(t("biometric_enabled"));
-          } catch {
-            // user can enable later in settings
-          }
+        // Defer biometric enrollment to a user-gesture button (required by iOS Safari)
+        if (platformBio && !hasBiometric(uid)) {
+          setOfferBio(true);
+        } else {
+          onUnlocked();
         }
-        onUnlocked();
       } else {
         const ok = await verifyPin(uid, value);
         if (!ok) {
@@ -98,16 +109,18 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
   };
 
   const press = (digit: string) => {
-    if (busy || pin.length >= 4) return;
+    if (busy) return;
     setError(null);
-    const next = pin + digit;
-    setPinValue(next);
+    const current = pinRef.current;
+    if (current.length >= 4) return;
+    const next = current + digit;
+    setPinSafe(next);
     if (next.length === 4) handleComplete(next);
   };
   const backspace = () => {
     if (busy) return;
     setError(null);
-    setPinValue((p) => p.slice(0, -1));
+    setPinSafe(pinRef.current.slice(0, -1));
   };
 
   const tryBiometric = async () => {
@@ -125,7 +138,40 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
     mode === "confirm" ? t("pin_confirm_sub") :
     t("pin_unlock_sub");
 
-  const showBio = mode === "unlock" && hasBiometric(uid) && isBiometricSupported();
+  const showBio = mode === "unlock" && hasBiometric(uid) && platformBio;
+
+  // Biometric enrollment offer screen (after PIN setup) — needs a user-gesture button on iOS
+  if (offerBio) {
+    const enroll = async () => {
+      setBusy(true);
+      try {
+        await enrollBiometric(uid, user!.email ?? "user");
+        toast.success(t("biometric_enabled"));
+      } catch {
+        toast.error(t("biometric_failed"));
+      } finally {
+        setBusy(false);
+        onUnlocked();
+      }
+    };
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="glass w-full max-w-sm p-7 rounded-3xl border-border/30 shadow-card-soft text-center">
+          <div className="h-14 w-14 rounded-2xl gradient-primary flex items-center justify-center mb-3 shadow-fab mx-auto">
+            <Fingerprint className="h-7 w-7 text-primary-foreground" />
+          </div>
+          <h1 className="text-xl font-semibold tracking-tight mb-1">{t("biometric")}</h1>
+          <p className="text-xs text-muted-foreground mb-5">{t("biometric_desc")}</p>
+          <Button onClick={enroll} disabled={busy} className="w-full h-12 rounded-2xl mb-2">
+            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : t("biometric_enable_now")}
+          </Button>
+          <Button variant="ghost" onClick={onUnlocked} disabled={busy} className="w-full h-10 rounded-2xl text-muted-foreground">
+            {t("skip")}
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">

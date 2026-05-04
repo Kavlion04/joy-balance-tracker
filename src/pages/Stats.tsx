@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { CalendarDays } from "lucide-react";
+import { format } from "date-fns";
+import { ru, enUS, uz } from "date-fns/locale";
+import type { DateRange } from "react-day-picker";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useI18n } from "@/contexts/I18nContext";
@@ -18,22 +25,36 @@ const COLORS = [
   "hsl(50 90% 55%)",
 ];
 
+const localeMap = { ru, uz, en: enUS };
+type Period = "day" | "week" | "month" | "custom";
+
 const Stats = () => {
   const { user } = useAuth();
   const { t, lang } = useI18n();
-  const [period, setPeriod] = useState<"day" | "week" | "month">("month");
+  const dfns = localeMap[lang];
+  const [period, setPeriod] = useState<Period>("month");
   const [type, setType] = useState<TxType>("expense");
   const [txs, setTxs] = useState<Transaction[]>([]);
 
+  const buildRange = (days: number): DateRange => {
+    const to = new Date();
+    const from = new Date();
+    from.setDate(to.getDate() - (days - 1));
+    return { from, to };
+  };
+  const [range, setRange] = useState<DateRange | undefined>(() => buildRange(30));
+
+  const applyPeriod = (p: Period) => {
+    setPeriod(p);
+    if (p === "day") setRange(buildRange(1));
+    else if (p === "week") setRange(buildRange(7));
+    else if (p === "month") setRange(buildRange(30));
+  };
+
   useEffect(() => {
-    if (!user) return;
-    const now = new Date();
-    const from = new Date(now);
-    if (period === "day") from.setDate(now.getDate());
-    else if (period === "week") from.setDate(now.getDate() - 6);
-    else from.setDate(now.getDate() - 29);
-    const fromStr = from.toISOString().slice(0, 10);
-    const toStr = now.toISOString().slice(0, 10);
+    if (!user || !range?.from) return;
+    const fromStr = format(range.from, "yyyy-MM-dd");
+    const toStr = format(range.to ?? range.from, "yyyy-MM-dd");
 
     supabase.from("transactions")
       .select("*")
@@ -42,7 +63,7 @@ const Stats = () => {
       .gte("occurred_on", fromStr)
       .lte("occurred_on", toStr)
       .then(({ data }) => setTxs((data ?? []) as Transaction[]));
-  }, [user, period]);
+  }, [user, range?.from, range?.to]);
 
   const data = useMemo(() => {
     const map = new Map<string, number>();
@@ -59,20 +80,27 @@ const Stats = () => {
 
   const total = data.reduce((s, d) => s + d.value, 0);
 
+  const rangeLabel = range?.from
+    ? range.to && format(range.from, "yyyy-MM-dd") !== format(range.to, "yyyy-MM-dd")
+      ? `${format(range.from, "d MMM", { locale: dfns })} — ${format(range.to, "d MMM yyyy", { locale: dfns })}`
+      : format(range.from, "d MMMM yyyy", { locale: dfns })
+    : t("pick_period");
+
   return (
     <div className="pb-32 max-w-md mx-auto px-4 pt-6">
       <h1 className="text-2xl font-bold tracking-tight mb-1">{t("statistics")}</h1>
       <p className="text-sm text-muted-foreground mb-6">{t("by_category")}</p>
 
-      <div className="grid grid-cols-3 gap-1 p-1 rounded-2xl bg-muted/40 mb-3">
+      <div className="grid grid-cols-4 gap-1 p-1 rounded-2xl bg-muted/40 mb-3">
         {([
           { id: "day" as const, label: t("day") },
           { id: "week" as const, label: t("week") },
           { id: "month" as const, label: t("month") },
+          { id: "custom" as const, label: t("custom") },
         ]).map(p => (
           <button
             key={p.id}
-            onClick={() => setPeriod(p.id)}
+            onClick={() => applyPeriod(p.id)}
             className={cn(
               "py-2 rounded-xl text-xs font-medium transition-smooth",
               period === p.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
@@ -82,6 +110,33 @@ const Stats = () => {
           </button>
         ))}
       </div>
+
+      {period === "custom" ? (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="w-full h-12 justify-start glass border-border/30 rounded-2xl mb-3">
+              <CalendarDays className="mr-2 h-4 w-4 text-primary" />
+              {rangeLabel}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 bg-popover" align="center">
+            <Calendar
+              mode="range"
+              selected={range}
+              onSelect={setRange}
+              locale={dfns}
+              numberOfMonths={1}
+              initialFocus
+              className={cn("p-3 pointer-events-auto")}
+            />
+          </PopoverContent>
+        </Popover>
+      ) : (
+        <div className="glass rounded-2xl p-3 text-center text-sm text-muted-foreground border-border/30 mb-3">
+          <CalendarDays className="inline h-4 w-4 mr-1.5 text-primary" />
+          {rangeLabel}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-1 p-1 rounded-2xl bg-muted/40 mb-6">
         {([
