@@ -138,7 +138,40 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
     mode === "confirm" ? t("pin_confirm_sub") :
     t("pin_unlock_sub");
 
-  const showBio = mode === "unlock" && hasBiometric(uid) && isBiometricSupported();
+  const showBio = mode === "unlock" && hasBiometric(uid) && platformBio;
+
+  // Biometric enrollment offer screen (after PIN setup) — needs a user-gesture button on iOS
+  if (offerBio) {
+    const enroll = async () => {
+      setBusy(true);
+      try {
+        await enrollBiometric(uid, user!.email ?? "user");
+        toast.success(t("biometric_enabled"));
+      } catch {
+        toast.error(t("biometric_failed"));
+      } finally {
+        setBusy(false);
+        onUnlocked();
+      }
+    };
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="glass w-full max-w-sm p-7 rounded-3xl border-border/30 shadow-card-soft text-center">
+          <div className="h-14 w-14 rounded-2xl gradient-primary flex items-center justify-center mb-3 shadow-fab mx-auto">
+            <Fingerprint className="h-7 w-7 text-primary-foreground" />
+          </div>
+          <h1 className="text-xl font-semibold tracking-tight mb-1">{t("biometric")}</h1>
+          <p className="text-xs text-muted-foreground mb-5">{t("biometric_desc")}</p>
+          <Button onClick={enroll} disabled={busy} className="w-full h-12 rounded-2xl mb-2">
+            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : t("biometric_enable_now")}
+          </Button>
+          <Button variant="ghost" onClick={onUnlocked} disabled={busy} className="w-full h-10 rounded-2xl text-muted-foreground">
+            {t("skip")}
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
