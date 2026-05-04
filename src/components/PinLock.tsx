@@ -34,13 +34,19 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
   const [busy, setBusy] = useState(false);
   const [shake, setShake] = useState(false);
   const triedBio = useRef(false);
+  const [platformBio, setPlatformBio] = useState(false);
+
+  // Async-detect Face ID / Touch ID / Android fingerprint
+  useEffect(() => {
+    isPlatformAuthenticatorAvailable().then(setPlatformBio);
+  }, []);
 
   const setPinSafe = (v: string) => {
     pinRef.current = v;
     setPinValue(v);
   };
 
-  // Auto-try biometric unlock on mount
+  // Auto-try biometric unlock on mount (silent — iOS may ignore without gesture, that's ok)
   useEffect(() => {
     if (mode !== "unlock" || triedBio.current) return;
     triedBio.current = true;
