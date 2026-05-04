@@ -36,7 +36,7 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
   const triedBio = useRef(false);
   const [platformBio, setPlatformBio] = useState(false);
   const [offerBio, setOfferBio] = useState(false);
-  // remove duplicate platformBio below
+  
 
   // Async-detect Face ID / Touch ID / Android fingerprint
   useEffect(() => {
