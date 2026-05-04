@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useI18n } from "@/contexts/I18nContext";
 import {
   hasBiometric,
-  isBiometricSupported,
+  isPlatformAuthenticatorAvailable,
   enrollBiometric,
   disableBiometric,
   clearPin,
@@ -19,7 +19,11 @@ export const SecuritySettings = ({ onChangePin }: { onChangePin: () => void }) =
   const { t } = useI18n();
   const [bioOn, setBioOn] = useState(false);
   const [busy, setBusy] = useState(false);
-  const supported = isBiometricSupported();
+  const [supported, setSupported] = useState(false);
+
+  useEffect(() => {
+    isPlatformAuthenticatorAvailable().then(setSupported);
+  }, []);
 
   useEffect(() => {
     if (user) setBioOn(hasBiometric(user.id));
