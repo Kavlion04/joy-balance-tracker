@@ -104,6 +104,7 @@ export const enrollBiometric = async (uid: string, label: string) => {
       authenticatorSelection: {
         userVerification: "required",
         residentKey: "preferred",
+        authenticatorAttachment: "platform",
       },
       timeout: 60000,
       attestation: "none",
