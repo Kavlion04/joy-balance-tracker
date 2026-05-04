@@ -27,11 +27,17 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
   const initialMode: Mode = hasPin(uid) ? "unlock" : "create";
   const [mode, setMode] = useState<Mode>(initialMode);
   const [pin, setPinValue] = useState("");
+  const pinRef = useRef(""); // synchronous mirror to avoid stale-state races between rapid taps
   const [firstPin, setFirstPin] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [shake, setShake] = useState(false);
   const triedBio = useRef(false);
+
+  const setPinSafe = (v: string) => {
+    pinRef.current = v;
+    setPinValue(v);
+  };
 
   // Auto-try biometric unlock on mount
   useEffect(() => {
@@ -48,7 +54,7 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
     setError(msg);
     setShake(true);
     setTimeout(() => setShake(false), 500);
-    setPinValue("");
+    setPinSafe("");
   };
 
   const handleComplete = async (value: string) => {
