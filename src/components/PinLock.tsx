@@ -86,16 +86,12 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
         await setPin(uid, value);
         markUnlocked(uid);
         toast.success(t("pin_set"));
-        // Offer biometric enrollment
-        if (isBiometricSupported() && !hasBiometric(uid)) {
-          try {
-            await enrollBiometric(uid, user!.email ?? "user");
-            toast.success(t("biometric_enabled"));
-          } catch {
-            // user can enable later in settings
-          }
+        // Defer biometric enrollment to a user-gesture button (required by iOS Safari)
+        if (platformBio && !hasBiometric(uid)) {
+          setOfferBio(true);
+        } else {
+          onUnlocked();
         }
-        onUnlocked();
       } else {
         const ok = await verifyPin(uid, value);
         if (!ok) {
