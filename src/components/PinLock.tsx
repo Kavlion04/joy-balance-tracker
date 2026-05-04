@@ -66,7 +66,7 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
           return;
         }
         setFirstPin(value);
-        setPinValue("");
+        setPinSafe("");
         setMode("confirm");
         setError(null);
       } else if (mode === "confirm") {
@@ -104,16 +104,18 @@ export const PinLock = ({ onUnlocked }: { onUnlocked: () => void }) => {
   };
 
   const press = (digit: string) => {
-    if (busy || pin.length >= 4) return;
+    if (busy) return;
     setError(null);
-    const next = pin + digit;
-    setPinValue(next);
+    const current = pinRef.current;
+    if (current.length >= 4) return;
+    const next = current + digit;
+    setPinSafe(next);
     if (next.length === 4) handleComplete(next);
   };
   const backspace = () => {
     if (busy) return;
     setError(null);
-    setPinValue((p) => p.slice(0, -1));
+    setPinSafe(pinRef.current.slice(0, -1));
   };
 
   const tryBiometric = async () => {
