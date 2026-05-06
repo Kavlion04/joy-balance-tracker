@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProfileProvider } from "@/contexts/ProfileContext";
 import { I18nProvider } from "@/contexts/I18nContext";
+import { CategoriesProvider } from "@/contexts/CategoriesContext";
 import { ProtectedLayout } from "@/components/ProtectedLayout";
 import { ThemeApplier } from "@/components/ThemeApplier";
 import { OfflineBanner } from "@/components/OfflineBanner";
@@ -27,6 +28,7 @@ const App = () => (
         <I18nProvider>
         <AuthProvider>
           <ProfileProvider>
+          <CategoriesProvider>
           <ThemeApplier />
           <OfflineBanner />
           <Routes>
@@ -37,6 +39,7 @@ const App = () => (
             <Route path="/settings" element={<ProtectedLayout><Settings /></ProtectedLayout>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </CategoriesProvider>
           </ProfileProvider>
         </AuthProvider>
         </I18nProvider>
