@@ -115,18 +115,26 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
 
           <div className="space-y-1.5">
             <Label>{t("category")}</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="h-12 bg-muted/50 border-border/50 rounded-2xl">
-                <SelectValue placeholder={t("pick_category")} />
-              </SelectTrigger>
-              <SelectContent className="bg-popover">
-                {cats.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    <span className="mr-2">{c.emoji}</span>{c.name[lang]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="h-12 bg-muted/50 border-border/50 rounded-2xl flex-1">
+                  <SelectValue placeholder={t("pick_category")} />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  {cats.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      <span className="mr-2">{c.emoji}</span>{c.name[lang]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button type="button" variant="outline"
+                onClick={() => setNewCatOpen(true)}
+                className="h-12 w-12 rounded-2xl shrink-0 border-border/50 bg-muted/50"
+                aria-label={t("new_category")}>
+                <Plus className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
 
           <div className="space-y-1.5">
@@ -176,5 +184,7 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
         </div>
       </DialogContent>
     </Dialog>
+    <NewCategoryDialog open={newCatOpen} onOpenChange={setNewCatOpen} type={type} onCreated={(id) => setCategory(id)} />
+    </>
   );
 };
