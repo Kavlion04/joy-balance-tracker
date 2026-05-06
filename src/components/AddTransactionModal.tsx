@@ -71,6 +71,7 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={(o) => { if (!o) reset(); onOpenChange(o); }}>
       <DialogContent className="glass border-border/40 max-w-md rounded-3xl">
         <DialogHeader>
