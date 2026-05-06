@@ -2,7 +2,7 @@ import type { Lang } from "./i18n";
 
 type Loc = { ru: string; uz: string; en: string };
 
-interface CategoryDef {
+export interface CategoryDef {
   id: string;
   emoji: string;
   name: Loc;
