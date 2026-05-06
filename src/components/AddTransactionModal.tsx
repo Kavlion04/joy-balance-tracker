@@ -37,8 +37,10 @@ export const AddTransactionModal = ({ open, onOpenChange, onSaved }: Props) => {
   const [comment, setComment] = useState("");
   const [date, setDate] = useState<Date>(new Date());
   const [saving, setSaving] = useState(false);
+  const [newCatOpen, setNewCatOpen] = useState(false);
 
-  const cats = type === "income" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+  const { list } = useCategories();
+  const cats = list(type);
 
   const reset = () => {
     setType("expense"); setAmount(""); setCategory(""); setComment(""); setDate(new Date());
