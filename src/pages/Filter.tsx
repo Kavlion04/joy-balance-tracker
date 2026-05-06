@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useI18n } from "@/contexts/I18nContext";
 import { TransactionCard } from "@/components/TransactionCard";
+import { EditTransactionModal } from "@/components/EditTransactionModal";
 import { formatMoney } from "@/lib/categories";
 import type { Transaction, TxType } from "@/lib/types";
 import type { DateRange } from "react-day-picker";
@@ -33,6 +34,7 @@ const Filter = () => {
   const [range, setRange] = useState<DateRange | undefined>(() => buildRange(3));
   const [tab, setTab] = useState<TxType | "all">("all");
   const [txs, setTxs] = useState<Transaction[]>([]);
+  const [editTx, setEditTx] = useState<Transaction | null>(null);
 
   const applyPreset = (p: Preset) => {
     setPreset(p);
@@ -169,9 +171,10 @@ const Filter = () => {
             {t("no_ops_period")}
           </div>
         ) : (
-          filtered.map(tx => <TransactionCard key={tx.id} tx={tx} onDeleted={load} />)
+          filtered.map(tx => <TransactionCard key={tx.id} tx={tx} onDeleted={load} onEdit={setEditTx} />)
         )}
       </div>
+      <EditTransactionModal open={!!editTx} onOpenChange={(o) => !o && setEditTx(null)} tx={editTx} onSaved={load} />
     </div>
   );
 };

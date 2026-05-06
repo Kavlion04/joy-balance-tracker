@@ -159,7 +159,7 @@ const Home = () => {
             {t("no_ops_today")}
           </div>
         ) : (
-          filtered.map(tx => <TransactionCard key={tx.id} tx={tx} onDeleted={load} />)
+          filtered.map(tx => <TransactionCard key={tx.id} tx={tx} onDeleted={load} onEdit={setEditTx} />)
         )}
       </div>
 
@@ -172,6 +172,7 @@ const Home = () => {
       </button>
 
       <AddTransactionModal open={open} onOpenChange={setOpen} onSaved={load} />
+      <EditTransactionModal open={!!editTx} onOpenChange={(o) => !o && setEditTx(null)} tx={editTx} onSaved={load} />
     </div>
   );
 };
