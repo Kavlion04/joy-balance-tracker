@@ -168,4 +168,30 @@ export const t: Dict = {
   biometric_desc: { ru: "Быстрая разблокировка биометрией", uz: "Biometriya bilan tezkor ochish", en: "Quick unlock with biometrics" },
   security: { ru: "Безопасность", uz: "Xavfsizlik", en: "Security" },
   biometric_enable_now: { ru: "Включить Face ID / отпечаток", uz: "Face ID / barmoq izini yoqish", en: "Enable Face ID / fingerprint" },
+
+  // Edit / categories
+  edit_op: { ru: "Изменить операцию", uz: "Operatsiyani tahrirlash", en: "Edit transaction" },
+  new_category: { ru: "Новая категория", uz: "Yangi kategoriya", en: "New category" },
+  name: { ru: "Название", uz: "Nomi", en: "Name" },
+  emoji: { ru: "Эмодзи", uz: "Emoji", en: "Emoji" },
+  enter_name: { ru: "Введите название", uz: "Nomini kiriting", en: "Enter a name" },
+  categories_section: { ru: "Категории", uz: "Kategoriyalar", en: "Categories" },
+  no_custom_cats: { ru: "Своих категорий пока нет", uz: "Hali shaxsiy kategoriyalar yo‘q", en: "No custom categories yet" },
+
+  // Theme
+  theme: { ru: "Тема", uz: "Mavzu", en: "Theme" },
+  theme_light: { ru: "Светлая", uz: "Yorug‘", en: "Light" },
+  theme_dark: { ru: "Тёмная", uz: "Tungi", en: "Dark" },
+  theme_system: { ru: "Системная", uz: "Tizim", en: "System" },
+
+  // Device
+  device: { ru: "Устройство", uz: "Qurilma", en: "Device" },
+  current_device: { ru: "Текущее устройство", uz: "Joriy qurilma", en: "Current device" },
+  browser: { ru: "Браузер", uz: "Brauzer", en: "Browser" },
+  screen: { ru: "Экран", uz: "Ekran", en: "Screen" },
+  online: { ru: "В сети", uz: "Onlayn", en: "Online" },
+  offline: { ru: "Не в сети", uz: "Oflayn", en: "Offline" },
+  other_sessions_desc: { ru: "Завершить все другие сессии этого аккаунта.", uz: "Hisobning boshqa barcha sessiyalarini yakunlang.", en: "Sign out of all other sessions for this account." },
+  sign_out_others: { ru: "Выйти на других устройствах", uz: "Boshqa qurilmalardan chiqish", en: "Sign out other devices" },
+  other_sessions_signed_out: { ru: "Другие сессии завершены", uz: "Boshqa sessiyalar yakunlandi", en: "Other sessions ended" },
 };
