@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/contexts/ProfileContext";
 import { useI18n } from "@/contexts/I18nContext";
 import { AddTransactionModal } from "@/components/AddTransactionModal";
+import { EditTransactionModal } from "@/components/EditTransactionModal";
 import { TransactionCard } from "@/components/TransactionCard";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { formatMoney } from "@/lib/categories";
@@ -28,6 +29,7 @@ const Home = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [tab, setTab] = useState<TxType | "all">("all");
   const [open, setOpen] = useState(false);
+  const [editTx, setEditTx] = useState<Transaction | null>(null);
   const [txs, setTxs] = useState<Transaction[]>([]);
 
   const dateStr = format(date, "yyyy-MM-dd");
@@ -157,7 +159,7 @@ const Home = () => {
             {t("no_ops_today")}
           </div>
         ) : (
-          filtered.map(tx => <TransactionCard key={tx.id} tx={tx} onDeleted={load} />)
+          filtered.map(tx => <TransactionCard key={tx.id} tx={tx} onDeleted={load} onEdit={setEditTx} />)
         )}
       </div>
 
@@ -170,6 +172,7 @@ const Home = () => {
       </button>
 
       <AddTransactionModal open={open} onOpenChange={setOpen} onSaved={load} />
+      <EditTransactionModal open={!!editTx} onOpenChange={(o) => !o && setEditTx(null)} tx={editTx} onSaved={load} />
     </div>
   );
 };

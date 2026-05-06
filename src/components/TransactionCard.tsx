@@ -1,9 +1,10 @@
 import { Card } from "@/components/ui/card";
-import { ArrowDownCircle, ArrowUpCircle, Trash2 } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, Trash2, Pencil } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ru, enUS, uz } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { formatMoney, getCategory } from "@/lib/categories";
+import { formatMoney, getCategory as baseGetCategory } from "@/lib/categories";
+import { useCategories } from "@/contexts/CategoriesContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/contexts/I18nContext";
 import { toast } from "sonner";
@@ -11,12 +12,20 @@ import type { Transaction } from "@/lib/types";
 
 const localeMap = { ru, uz, en: enUS };
 
-export const TransactionCard = ({ tx, onDeleted }: { tx: Transaction; onDeleted: () => void }) => {
+interface Props {
+  tx: Transaction;
+  onDeleted: () => void;
+  onEdit?: (tx: Transaction) => void;
+}
+
+export const TransactionCard = ({ tx, onDeleted, onEdit }: Props) => {
   const { lang, t } = useI18n();
-  const cat = getCategory(tx.category);
+  const { byId } = useCategories();
+  const cat = byId[tx.category] ?? baseGetCategory(tx.category);
   const isIncome = tx.type === "income";
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     const { error } = await supabase
       .from("transactions")
       .update({ deleted_at: new Date().toISOString() })
@@ -26,22 +35,17 @@ export const TransactionCard = ({ tx, onDeleted }: { tx: Transaction; onDeleted:
   };
 
   return (
-    <Card className="glass border-border/30 rounded-2xl p-4 flex items-center gap-3 shadow-card-soft transition-smooth hover:scale-[1.02]">
-      <div
-        className={cn(
-          "h-12 w-12 rounded-2xl flex items-center justify-center text-2xl shrink-0",
-          isIncome ? "bg-income/15" : "bg-expense/15"
-        )}
-      >
+    <Card
+      onClick={() => onEdit?.(tx)}
+      className="glass border-border/30 rounded-2xl p-4 flex items-center gap-3 shadow-card-soft transition-smooth hover:scale-[1.02] cursor-pointer active:scale-[0.99]"
+    >
+      <div className={cn("h-12 w-12 rounded-2xl flex items-center justify-center text-2xl shrink-0",
+        isIncome ? "bg-income/15" : "bg-expense/15")}>
         {cat.emoji}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          {isIncome ? (
-            <ArrowUpCircle className="h-3.5 w-3.5 text-income" />
-          ) : (
-            <ArrowDownCircle className="h-3.5 w-3.5 text-expense" />
-          )}
+          {isIncome ? <ArrowUpCircle className="h-3.5 w-3.5 text-income" /> : <ArrowDownCircle className="h-3.5 w-3.5 text-expense" />}
           <p className="font-medium truncate">{cat.name[lang]}</p>
         </div>
         {tx.comment && <p className="text-xs text-muted-foreground truncate">{tx.comment}</p>}
@@ -51,16 +55,14 @@ export const TransactionCard = ({ tx, onDeleted }: { tx: Transaction; onDeleted:
       </div>
       <div className="text-right shrink-0">
         <p className={cn("font-semibold whitespace-nowrap", isIncome ? "text-income" : "text-expense")}>
-          {isIncome ? "+" : "−"}
-          {formatMoney(Number(tx.amount), lang)}
+          {isIncome ? "+" : "−"}{formatMoney(Number(tx.amount), lang)}
         </p>
-        <button
-          onClick={handleDelete}
-          className="text-muted-foreground/50 hover:text-expense transition-smooth mt-1"
-          aria-label="Delete"
-        >
-          <Trash2 className="h-3.5 w-3.5 ml-auto" />
-        </button>
+        <div className="flex items-center justify-end gap-2 mt-1">
+          <Pencil className="h-3.5 w-3.5 text-muted-foreground/60" />
+          <button onClick={handleDelete} className="text-muted-foreground/50 hover:text-expense transition-smooth" aria-label="Delete">
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
     </Card>
   );

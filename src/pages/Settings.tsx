@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Loader2, RotateCcw, Trash2, User as UserIcon, Palette, Image as ImageIcon, Volume2, ShieldCheck } from "lucide-react";
+import { LogOut, Loader2, RotateCcw, Trash2, User as UserIcon, Palette, Image as ImageIcon, Volume2, ShieldCheck, Smartphone, Tag, Sun } from "lucide-react";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { ru, enUS, uz } from "date-fns/locale";
@@ -29,6 +29,9 @@ import { SoundSettings } from "@/components/SoundSettings";
 import { SecuritySettings } from "@/components/SecuritySettings";
 import { InstallButton } from "@/components/InstallButton";
 import { LangSwitcher } from "@/components/LangSwitcher";
+import { ThemeSettings } from "@/components/ThemeSettings";
+import { DeviceSettings } from "@/components/DeviceSettings";
+import { CategoriesSettings } from "@/components/CategoriesSettings";
 import { formatMoney, getCategory } from "@/lib/categories";
 import { cn } from "@/lib/utils";
 import type { Transaction } from "@/lib/types";
@@ -141,6 +144,22 @@ const Settings = () => {
         <AppearanceSettings />
       </Card>
 
+      {/* Theme */}
+      <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
+        <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+          <Sun className="h-4 w-4" /> {t("theme")}
+        </div>
+        <ThemeSettings />
+      </Card>
+
+      {/* Categories */}
+      <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
+        <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+          <Tag className="h-4 w-4" /> {t("categories_section")}
+        </div>
+        <CategoriesSettings />
+      </Card>
+
       {/* Sound */}
       <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
         <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
@@ -163,6 +182,14 @@ const Settings = () => {
           <ImageIcon className="h-4 w-4" /> {t("background")}
         </div>
         <BackgroundPicker />
+      </Card>
+
+      {/* Device */}
+      <Card className="glass border-border/30 rounded-3xl p-5 mb-4 shadow-card-soft">
+        <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+          <Smartphone className="h-4 w-4" /> {t("device")}
+        </div>
+        <DeviceSettings />
       </Card>
 
       {/* Install */}

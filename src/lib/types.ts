@@ -13,6 +13,16 @@ export interface Transaction {
 }
 
 export type TextSize = "sm" | "md" | "lg";
+export type ThemeMode = "dark" | "light" | "system";
+
+export interface CustomCategory {
+  id: string;
+  user_id: string;
+  type: TxType;
+  name: string;
+  emoji: string;
+  created_at: string;
+}
 
 export interface Profile {
   id: string;
