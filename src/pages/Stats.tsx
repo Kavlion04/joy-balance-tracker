@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useI18n } from "@/contexts/I18nContext";
 import { cn } from "@/lib/utils";
 import { formatMoney, getCategory } from "@/lib/categories";
+import { useCategories } from "@/contexts/CategoriesContext";
 import type { Transaction, TxType } from "@/lib/types";
 
 const COLORS = [
