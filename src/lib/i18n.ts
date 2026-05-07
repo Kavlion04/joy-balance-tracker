@@ -195,4 +195,5 @@ export const t: Dict = {
   other_sessions_desc: { ru: "Завершить все другие сессии этого аккаунта.", uz: "Hisobning boshqa barcha sessiyalarini yakunlang.", en: "Sign out of all other sessions for this account." },
   sign_out_others: { ru: "Выйти на других устройствах", uz: "Boshqa qurilmalardan chiqish", en: "Sign out other devices" },
   other_sessions_signed_out: { ru: "Другие сессии завершены", uz: "Boshqa sessiyalar yakunlandi", en: "Other sessions ended" },
+  language: { ru: "Язык", uz: "Til", en: "Language" },
 };
