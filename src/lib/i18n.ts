@@ -143,6 +143,7 @@ export const t: Dict = {
   // Network
   you_are_offline: { ru: "Нет подключения к интернету", uz: "Internetga ulanish yo‘q", en: "You are offline" },
   back_online: { ru: "Снова в сети", uz: "Yana onlayn", en: "Back online" },
+  offline_modal_desc: { ru: "Проверьте подключение и подождите. Приложение продолжит работу автоматически.", uz: "Ulanishni tekshiring va kuting. Ilova avtomatik davom etadi.", en: "Check your connection and wait. The app will resume automatically." },
 
   // Sound
   sound: { ru: "Звук", uz: "Ovoz", en: "Sound" },
