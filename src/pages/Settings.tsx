@@ -74,7 +74,8 @@ type SheetKey =
 const Settings = () => {
   const { user, signOut } = useAuth();
   const { profile, update } = useProfile();
-  const { t, lang } = useI18n();
+  const { t, lang, setLang } = useI18n();
+  const { byId: catsById } = useCategories();
   const dfns = localeMap[lang];
 
   const [name, setName] = useState(profile?.display_name ?? "");
