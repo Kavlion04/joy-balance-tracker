@@ -74,7 +74,7 @@ const Stats = () => {
     });
     return Array.from(map.entries())
       .map(([cat, value]) => {
-        const c = getCategory(cat);
+        const c = byId[cat] ?? getCategory(cat);
         return { cat, value, label: c.name[lang], emoji: c.emoji };
       })
       .sort((a, b) => b.value - a.value);
