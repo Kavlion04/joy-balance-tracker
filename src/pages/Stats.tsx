@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useI18n } from "@/contexts/I18nContext";
 import { cn } from "@/lib/utils";
 import { formatMoney, getCategory } from "@/lib/categories";
+import { useCategories } from "@/contexts/CategoriesContext";
 import type { Transaction, TxType } from "@/lib/types";
 
 const COLORS = [
@@ -31,6 +32,7 @@ type Period = "day" | "week" | "month" | "custom";
 const Stats = () => {
   const { user } = useAuth();
   const { t, lang } = useI18n();
+  const { byId } = useCategories();
   const dfns = localeMap[lang];
   const [period, setPeriod] = useState<Period>("month");
   const [type, setType] = useState<TxType>("expense");
@@ -72,7 +74,7 @@ const Stats = () => {
     });
     return Array.from(map.entries())
       .map(([cat, value]) => {
-        const c = getCategory(cat);
+        const c = byId[cat] ?? getCategory(cat);
         return { cat, value, label: c.name[lang], emoji: c.emoji };
       })
       .sort((a, b) => b.value - a.value);

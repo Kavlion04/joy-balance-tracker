@@ -40,13 +40,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/contexts/ProfileContext";
 import { useI18n } from "@/contexts/I18nContext";
+import { useCategories } from "@/contexts/CategoriesContext";
+import { LANGUAGES } from "@/lib/i18n";
 import { AvatarPicker } from "@/components/AvatarPicker";
 import { BackgroundPicker } from "@/components/BackgroundPicker";
 import { AppearanceSettings } from "@/components/AppearanceSettings";
 import { SoundSettings } from "@/components/SoundSettings";
 import { SecuritySettings } from "@/components/SecuritySettings";
 import { InstallButton } from "@/components/InstallButton";
-import { LangSwitcher } from "@/components/LangSwitcher";
 import { ThemeSettings } from "@/components/ThemeSettings";
 import { DeviceSettings } from "@/components/DeviceSettings";
 import { SettingsGroup, SettingsRow } from "@/components/SettingsRow";
@@ -73,7 +74,8 @@ type SheetKey =
 const Settings = () => {
   const { user, signOut } = useAuth();
   const { profile, update } = useProfile();
-  const { t, lang } = useI18n();
+  const { t, lang, setLang } = useI18n();
+  const { byId: catsById } = useCategories();
   const dfns = localeMap[lang];
 
   const [name, setName] = useState(profile?.display_name ?? "");
@@ -172,7 +174,24 @@ const Settings = () => {
       case "install": return <InstallButton />;
       case "language":
         return (
-          <div className="flex justify-center"><LangSwitcher /></div>
+          <div className="space-y-2">
+            {LANGUAGES.map((l) => (
+              <button
+                key={l.code}
+                onClick={() => { setLang(l.code); setOpenSheet(null); }}
+                className={cn(
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-2xl border transition-smooth",
+                  lang === l.code
+                    ? "bg-primary/15 border-primary/40 text-primary"
+                    : "bg-muted/30 border-border/30 hover:bg-muted/50"
+                )}
+              >
+                <span className="text-2xl">{l.flag}</span>
+                <span className="font-medium flex-1 text-left">{l.label}</span>
+                {lang === l.code && <span className="text-xs">✓</span>}
+              </button>
+            ))}
+          </div>
         );
       case "trash":
         return trashLoading ? (
@@ -206,7 +225,7 @@ const Settings = () => {
               </AlertDialog>
             )}
             {deleted.map((tx) => {
-              const cat = getCategory(tx.category);
+              const cat = catsById[tx.category] ?? getCategory(tx.category);
               const isIncome = tx.type === "income";
               return (
                 <div key={tx.id} className="flex items-center gap-3 p-3 rounded-2xl bg-muted/30 border border-border/30">
