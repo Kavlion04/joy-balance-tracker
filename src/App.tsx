@@ -9,7 +9,7 @@ import { I18nProvider } from "@/contexts/I18nContext";
 import { CategoriesProvider } from "@/contexts/CategoriesContext";
 import { ProtectedLayout } from "@/components/ProtectedLayout";
 import { ThemeApplier } from "@/components/ThemeApplier";
-import { OfflineBanner } from "@/components/OfflineBanner";
+import { OfflineModal } from "@/components/OfflineModal";
 import Home from "./pages/Home";
 import Stats from "./pages/Stats";
 import Filter from "./pages/Filter";
@@ -30,7 +30,7 @@ const App = () => (
           <ProfileProvider>
           <CategoriesProvider>
           <ThemeApplier />
-          <OfflineBanner />
+          <OfflineModal />
           <Routes>
             <Route path="/auth" element={<Auth />} />
             <Route path="/" element={<ProtectedLayout><Home /></ProtectedLayout>} />

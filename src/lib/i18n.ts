@@ -143,6 +143,7 @@ export const t: Dict = {
   // Network
   you_are_offline: { ru: "Нет подключения к интернету", uz: "Internetga ulanish yo‘q", en: "You are offline" },
   back_online: { ru: "Снова в сети", uz: "Yana onlayn", en: "Back online" },
+  offline_modal_desc: { ru: "Проверьте подключение и подождите. Приложение продолжит работу автоматически.", uz: "Ulanishni tekshiring va kuting. Ilova avtomatik davom etadi.", en: "Check your connection and wait. The app will resume automatically." },
 
   // Sound
   sound: { ru: "Звук", uz: "Ovoz", en: "Sound" },
@@ -194,4 +195,5 @@ export const t: Dict = {
   other_sessions_desc: { ru: "Завершить все другие сессии этого аккаунта.", uz: "Hisobning boshqa barcha sessiyalarini yakunlang.", en: "Sign out of all other sessions for this account." },
   sign_out_others: { ru: "Выйти на других устройствах", uz: "Boshqa qurilmalardan chiqish", en: "Sign out other devices" },
   other_sessions_signed_out: { ru: "Другие сессии завершены", uz: "Boshqa sessiyalar yakunlandi", en: "Other sessions ended" },
+  language: { ru: "Язык", uz: "Til", en: "Language" },
 };
