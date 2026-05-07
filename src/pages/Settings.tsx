@@ -174,7 +174,24 @@ const Settings = () => {
       case "install": return <InstallButton />;
       case "language":
         return (
-          <div className="flex justify-center"><LangSwitcher /></div>
+          <div className="space-y-2">
+            {LANGUAGES.map((l) => (
+              <button
+                key={l.code}
+                onClick={() => { setLang(l.code); setOpenSheet(null); }}
+                className={cn(
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-2xl border transition-smooth",
+                  lang === l.code
+                    ? "bg-primary/15 border-primary/40 text-primary"
+                    : "bg-muted/30 border-border/30 hover:bg-muted/50"
+                )}
+              >
+                <span className="text-2xl">{l.flag}</span>
+                <span className="font-medium flex-1 text-left">{l.label}</span>
+                {lang === l.code && <span className="text-xs">✓</span>}
+              </button>
+            ))}
+          </div>
         );
       case "trash":
         return trashLoading ? (
