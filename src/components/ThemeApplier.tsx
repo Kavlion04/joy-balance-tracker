@@ -37,7 +37,11 @@ export const ThemeApplier = () => {
     root.style.fontSize = SIZE_PX[profile?.text_size ?? "md"];
 
     if (profile?.background_url) {
-      document.body.style.backgroundImage = `linear-gradient(hsl(var(--background) / 0.78), hsl(var(--background) / 0.78)), url(${profile.background_url})`;
+      const isDark = root.classList.contains("dark");
+      const overlay = isDark
+        ? "linear-gradient(135deg, hsl(var(--primary) / 0.18), hsl(var(--background) / 0.55) 60%, hsl(280 70% 40% / 0.18))"
+        : "linear-gradient(hsl(var(--background) / 0.72), hsl(var(--background) / 0.72))";
+      document.body.style.backgroundImage = `${overlay}, url(${profile.background_url})`;
       document.body.style.backgroundSize = "cover";
       document.body.style.backgroundPosition = "center";
       document.body.style.backgroundAttachment = "fixed";
