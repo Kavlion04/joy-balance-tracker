@@ -32,6 +32,7 @@ type Period = "day" | "week" | "month" | "custom";
 const Stats = () => {
   const { user } = useAuth();
   const { t, lang } = useI18n();
+  const { byId } = useCategories();
   const dfns = localeMap[lang];
   const [period, setPeriod] = useState<Period>("month");
   const [type, setType] = useState<TxType>("expense");
