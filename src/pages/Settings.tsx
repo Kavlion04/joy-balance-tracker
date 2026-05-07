@@ -206,7 +206,7 @@ const Settings = () => {
               </AlertDialog>
             )}
             {deleted.map((tx) => {
-              const cat = getCategory(tx.category);
+              const cat = catsById[tx.category] ?? getCategory(tx.category);
               const isIncome = tx.type === "income";
               return (
                 <div key={tx.id} className="flex items-center gap-3 p-3 rounded-2xl bg-muted/30 border border-border/30">
