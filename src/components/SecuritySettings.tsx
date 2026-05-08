@@ -52,6 +52,7 @@ export const SecuritySettings = ({ onChangePin }: { onChangePin: () => void }) =
     if (!user) return;
     clearPin(user.id);
     lock(user.id);
+    window.dispatchEvent(new CustomEvent("pin-lock-request"));
     onChangePin();
   };
 
