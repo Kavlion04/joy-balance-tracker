@@ -168,7 +168,7 @@ const Settings = () => {
       case "appearance": return <AppearanceSettings />;
       case "theme": return <ThemeSettings />;
       case "sound": return <SoundSettings />;
-      case "security": return <SecuritySettings onChangePin={() => window.location.reload()} />;
+      case "security": return <SecuritySettings onChangePin={() => setOpenSheet(null)} />;
       case "background": return <BackgroundPicker />;
       case "device": return <DeviceSettings />;
       case "install": return <InstallButton />;
