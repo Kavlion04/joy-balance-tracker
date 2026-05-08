@@ -17,6 +17,12 @@ export const ProtectedLayout = ({ children }: { children: ReactNode }) => {
   }, [user]);
 
   useEffect(() => {
+    const onLock = () => setUnlocked(false);
+    window.addEventListener("pin-lock-request", onLock);
+    return () => window.removeEventListener("pin-lock-request", onLock);
+  }, []);
+
+  useEffect(() => {
     if (!user || !unlocked || !isChimeEnabled()) return;
     const trigger = () => {
       playWelcomeChimeOncePerSession();
